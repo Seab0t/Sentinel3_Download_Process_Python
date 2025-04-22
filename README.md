@@ -1,16 +1,28 @@
-# Sentinel3_SNAPPY
-Download Sentinel3 files and process via snappy
+# Sentinel-3 LST Python Downloader & Processor
+Downloading and processing Sentinel-3 Land Surface Temperature (LST) data using ESA SNAP's Python interface (snappy). 
 
-# 下载哨兵3LSTzip.ipynb
-用于下载哨兵3 LST数据（zip格式）。使用ODATA API：https://documentation.dataspace.copernicus.eu/APIs/OData.html
-需要设置账号密码
+## 1. Data Download Module: Download_Sen3LSTzip.ipynb
+Python notebook for downloading Sentinel-3 Land Surface Temperature (LST) data in ZIP format. 
+Uses the Copernicus Data Space Ecosystem OData API: https://documentation.dataspace.copernicus.eu/APIs/OData.html
 
-# SNAPPY_Sen3Preprocess.ipynb
-使用Snappy库进行图像预处理。需要先在本地下载ESA SNAP。
-包括了：
-- Subset裁剪
-- Reproject重投影：由于Sen3的数据用的是地理查找表，对应的控制点用于投影，所以如果只是丢进ArcGIS重投影或是用别的重投影会导致有shift偏移。
-- 去云：使用波段运算apply掩膜。
+Requirements:
+- Valid Copernicus Data Space account credentials (username/password)
+- Python requests library for API communication
 
-# GoogleDriveDownload.ipynb
-由于我是下载到了Google Drive，解压后发现有些zip文件损坏。因此这个代码用于检查本地文件zip和GoogleDrive中对应的文件是否大小一致，若不一致则重新从GoogleDrive中下载这个文件覆盖原有的损坏的文件。
+## 2. Processing Module: SNAPPY_Sen3Preprocess.ipynb 
+Python notebook for Sentinel-3 data preprocessing using ESA SNAP's snappy Python interface.
+
+Processing workflow:
+1. **Subsetting** - Geographic extraction using polygon boundaries
+2. **Reprojection**
+3. **Cloud Masking** - Band math operation to apply:
+   - Remove Clouds using Probabilistic cloud mask (Bayesian approach)
+4. **Quality Filtered Export**  
+   - Saves output only when:  
+     - Valid (non-NaN) pixels > user-defined threshold (default: 100)  
+   - Output format: GeoTIFF
+
+System Requirements:
+- ESA SNAP installed locally
+- snappy Python interface properly configured
+- Adequate disk space for temporary processing files
